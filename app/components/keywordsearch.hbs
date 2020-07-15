@@ -1,0 +1,66 @@
+<style>
+    .adjustwidth{
+        max-width: 700px;
+        background-color: white;
+    }
+    .highlight {
+        background-color: yellow;
+    }
+</style>
+{{#if loginpage}}
+<div class="container">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Keyword Search</h5>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    {{input value=folderInput class="form-control" placeholder="Enter Folder Path"}} <br>
+                    {{input value=fileInput class="form-control" placeholder="Enter FileName"}}
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" {{action 'onValidate' on="click" }}>Validate Path</button>
+            </div>
+        </div>
+    </div>
+</div>
+{{/if}}
+{{#if searchpage}}
+<div class="container">
+    <div class="modal-dialog modal-dialog-centered adjustwidth">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="input-group-btn">
+                    <h5 class="modal-title">Keyword Search</h5>
+                    <span class="input-group">
+                        <small class="form-text text-muted">Folder Path: {{folderpath}}</small>
+                    </span>
+                    <span class="input-group">
+                        <small class="form-text text-muted">File Name: {{filename}}</small>
+                    </span>
+                </span>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    {{input value=keywordInput class="form-control" placeholder="Enter keyword to be searched"}}
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" {{action 'onSearch' on="click" }}>Search</button>
+            </div>
+        </div>
+    </div>
+    <div class="row justify-content-center align-items-center">
+        <table class="table table-hover table-bordered adjustwidth">
+            <thead>
+                <th scope="col">#</th>
+                <th scope="col">Search Results</th>
+            </thead>
+            <tbody id="display-results">
+            </tbody>
+        </table>
+        </div>
+    </div>
+{{/if}}
