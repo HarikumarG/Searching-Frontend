@@ -1,0 +1,56 @@
+<style>
+    .adjustwidth {
+        max-width: 700px;
+        background-color: white;
+    }
+</style>
+{{#if loginpage}}
+<div class="container">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Folder Search</h5>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    {{input value=folderInput class="form-control" placeholder="Enter Folder Path"}}
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" {{action 'onValidate' on="click" }}>Validate Path</button>
+            </div>
+        </div>
+    </div>
+</div>
+{{/if}}
+{{#if searchpage}}
+<div class="container">
+    <div class="modal-dialog modal-dialog-centered adjustwidth">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="input-group-btn">
+                    <h5 class="modal-title">Folder Search</h5>
+                    <span class="input-group">
+                        <small class="form-text text-muted">Folder Path: {{folderpath}}</small>
+                    </span>
+                    <span class="input-group">
+                        <small class="form-text text-muted">Pattern: {{pattern}}</small>
+                    </span>
+                </span>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    {{input value=patternInput class="form-control" placeholder="Enter pattern to be searched"}}
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" {{action 'onSearch' on="click" }}>Search</button>
+            </div>
+        </div>
+    </div>
+</div>
+{{/if}}
+<div class="container h-100">
+    <div id="data" class="row justify-content-center align-items-center">
+    </div>
+</div>

@@ -18,7 +18,7 @@ export default class KeywordsearchComponent extends Component {
     lineNo = 1;
     keyword = undefined;
     responsedata = undefined;
-    folderregexlinux = /^\/$|(\/[a-zA-Z_0-9-]+)+\//;
+    folderregexlinux = /^\/$|(\/[a-zA-Z_0-9-]+)+$/;
 
     @action onValidate() {
         if(this.folderInput == undefined || this.fileInput == undefined) {
@@ -66,12 +66,12 @@ export default class KeywordsearchComponent extends Component {
             contentType: "application/json; charset=utf-8",
             dataType:"json",
             data: JSON.stringify({
-                "folderpath":this.folderInput,
+                "folderpath":this.folderInput+"/",
                 "filename":this.fileInput
             })
         }).then((response) => {
             if(response == "SUCCESS") {
-                this.folderpath = this.folderInput;
+                this.folderpath = this.folderInput+"/";
                 this.filename = this.fileInput;
                 this.loginpage = false;
                 this.searchpage = true;
