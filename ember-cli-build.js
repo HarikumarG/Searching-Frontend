@@ -7,7 +7,7 @@ module.exports = function(defaults) {
     // Add options here
   });
   app.import('node_modules/bootstrap/dist/css/bootstrap.min.css');
-  app.import('node_modules/bootstrap/dist/js/bootstrap.min.js');
+  app.import('node_modules/bootstrap/dist/js/bootstrap.bundle.min.js');
 
   app.import('node_modules/font-awesome/font-awesome.min.css');
   app.import('node_modules/bootstrap/dist/js/bootstrap.js');

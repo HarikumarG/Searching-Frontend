@@ -8,10 +8,9 @@ export default class KeywordsearchComponent extends Component {
     @tracked loginpage = true;
     @tracked searchpage = false;
     @tracked analytics = false;
-    @tracked showAnalytics = false;
-    @tracked showChart = false;
-    @tracked analyticsdata = undefined;
     @tracked chartType = false;
+
+    @tracked analyticsdata = undefined;
 
     folderpath = "";
     filename = "";
@@ -20,6 +19,10 @@ export default class KeywordsearchComponent extends Component {
     responsedata = undefined;
     folderregexlinux = /^\/$|(\/[a-zA-Z_0-9-]+)+$/;
 
+    constructor() {
+        super(...arguments);
+        google.charts.load('current', {packages: ['corechart','table']});
+    }
     @action onValidate() {
         if(this.folderInput == undefined || this.fileInput == undefined) {
             alert("Fill all the fields");
@@ -44,19 +47,24 @@ export default class KeywordsearchComponent extends Component {
     @action onAnalytics() {
         if(this.keyword != undefined) {
             this.getAnalyticsReq();
-            this.chartType = true;
         } else {
             alert("Keyword is undefined");
         }
     }
 
-    @action onChartView() {
-        this.charts(this.responsedata);
+    @action onTableView() {
+        this.clearChart();
+        this.drawChart(this.analyticsdata,"tablechart");
     }
 
-    @action onNormalView() {
-        this.showAnalytics = true;
-        this.showChart = false;
+    @action onBarView() {
+        this.clearChart();
+        this.drawChart(this.analyticsdata,"barchart");
+    }
+
+    @action onColView() {
+        this.clearChart();
+        this.drawChart(this.analyticsdata,"colchart");
     }
 
     checkpathReq() {
@@ -96,6 +104,7 @@ export default class KeywordsearchComponent extends Component {
             })
         }).then((response) => {
             this.keyword = this.keywordInput;
+            $("#display-results").empty();
             for(var key in response[this.keyword]) {
                 var sentence = response[this.keyword][key];
                 if(sentence.length > 0) {
@@ -103,13 +112,17 @@ export default class KeywordsearchComponent extends Component {
                     this.lineNo++;
                 }
             }
-            this.analytics = true;
+            if(response[this.keyword].length > 0) {
+                this.analytics = true;
+            } else {
+                alert("No results for the search");
+            }
         }).catch(function(error) {
             console.log(error);
         })
     }
-    getAnalyticsReq() {
-        jQuery.ajax({
+    async getAnalyticsReq() {
+        await jQuery.ajax({
             url:"http://localhost:8080/Searching-Backend/analytics",
             type: "POST",
             contentType: "application/json; charset=utf-8",
@@ -120,7 +133,8 @@ export default class KeywordsearchComponent extends Component {
         }).then((response) => {
             console.log(response);
             this.responsedata = response;
-            this.charts(response);
+            this.charts(this.responsedata);
+            this.chartType = true;
         }).catch(function(error) {
             console.log(error);
         })
@@ -150,10 +164,7 @@ export default class KeywordsearchComponent extends Component {
         tbody.appendChild(trow);
     }
 
-    async charts(data) {
-        this.showChart = true;
-        this.showAnalytics = false;
-        await google.charts.load('current', {packages: ['corechart']});
+    charts(data) {
         var searches = data["searchcount"];
         var results = data["resultcount"];
         var time = data["timetaken"];
@@ -178,26 +189,108 @@ export default class KeywordsearchComponent extends Component {
             tminval:time[2]["keyval"],
         }
         this.analyticsdata = d;
-        this.drawChart(d);
     }
-    drawChart(data) {
+    drawChart(data,type) {
+        if(type === "tablechart") {
+            var tableval = this.data_div_tableType(data);
+            var chart = new google.visualization.Table(document.getElementById('data_div'));
+            chart.draw(tableval[0],tableval[1]);
+        }
+        else if(type === "barchart") {
+            var dataval = this.data_div_arrayType(data);
+            var chart = new google.visualization.BarChart(document.getElementById('data_div'));
+            chart.draw(dataval[0],dataval[1]);
+            var timeval = this.time_div_arrayType(data);
+            var timechart = new google.visualization.BarChart(document.getElementById('time_div'));
+            timechart.draw(timeval[0],timeval[1]);
+        } else if(type === "colchart") {
+            var dataval = this.data_div_arrayType(data);
+            var chart = new google.visualization.ColumnChart(document.getElementById('data_div'));
+            chart.draw(dataval[0],dataval[1]);
+            var timeval = this.time_div_arrayType(data);
+            var timechart = new google.visualization.ColumnChart(document.getElementById('time_div'));
+            timechart.draw(timeval[0],timeval[1]);
+        }
+    }
+    clearChart() {
+        $('#data_div').empty();
+        $('#time_div').empty();
+    }
+    data_div_arrayType(data) {
         var d = google.visualization.arrayToDataTable([
-            ['Type',      'MAX',{ role: 'annotation'}, 'MIN',{ role: 'annotation'}, 'CURRENT',{ role: 'annotation'}],
-            ['Searches',  data.smaxval,data.smaxkey,   data.sminval,data.sminkey,    data.scval,data.sckey],
-            ['Results',   data.rmaxval,data.rmaxkey,   data.rminval,data.rminkey,    data.rcval,data.rckey]
-        ]);
-
+                ['Type',      'MAX',{ role: 'annotation'}, 'MIN',{ role: 'annotation'}, 'CURRENT',{ role: 'annotation'}],
+                ['Searches',  data.smaxval,data.smaxkey,   data.sminval,data.sminkey,    data.scval,data.sckey],
+                ['Results',   data.rmaxval,data.rmaxkey,   data.rminval,data.rminkey,    data.rcval,data.rckey]
+            ]);
         var options = {title: 'Searches (in number of times searched)\nResults (in number of lines obtained)'};
-        var chart = new google.visualization.BarChart(document.getElementById('data_div'));
-        chart.draw(d, options);
-
+        return [d,options];        
+    }
+    time_div_arrayType(data) {
         var timedata = google.visualization.arrayToDataTable([
-            ['Type',      'MAX',{ role: 'annotation'}, 'MIN',{ role: 'annotation'}, 'CURRENT',{ role: 'annotation'}],
-            ['Time Taken', data.tmaxval,data.tmaxkey,    data.tminval,data.tminkey, data.tcval,data.tckey]
-        ]);
-
+                ['Type',      'MAX',{ role: 'annotation'}, 'MIN',{ role: 'annotation'}, 'CURRENT',{ role: 'annotation'}],
+                ['Time Taken', data.tmaxval,data.tmaxkey,    data.tminval,data.tminkey, data.tcval,data.tckey]
+            ]);
         var timeoptions = {title: 'Time (in Nano seconds)'};
-        var timechart = new google.visualization.BarChart(document.getElementById('time_div'));
-        timechart.draw(timedata,timeoptions);
+        return[timedata,timeoptions];
+    }
+    data_div_tableType(data) {
+        var d = new google.visualization.DataTable();
+        d.addColumn('string','Type');
+        d.addColumn('string','Max Name (keyword)');
+        d.addColumn('number','Max Value');
+        d.addColumn('string','Min Name (keyword)');
+        d.addColumn('number','Min Value');
+        d.addColumn('string','Current Name (keyword)');
+        d.addColumn('number','Current Value');
+        d.addRows([
+            ['Search Count (in Counts)',data.smaxkey,data.smaxval,data.sminkey,data.sminval,data.sckey,data.scval],
+            ['Results Count (in Counts)',data.rmaxkey,data.rmaxval,data.rminkey,data.rminval,data.rckey,data.rcval],
+            ['Time Taken (in NanoSecs)',data.tmaxkey,data.tmaxval,data.tminkey,data.tminval,data.tckey,data.tcval]
+        ]);
+        var options = {};
+        return [d,options];
     }
 }
+
+// {{#if showAnalytics}}
+//         <table class="table table-hover table-bordered adjustwidth">
+//             <thead>
+//                 <th scope="col">Type</th>
+//                 <th scope="col">MAX</th>
+//                 <th scope="col">MAX Value</th>
+//                 <th scope="col">MIN</th>
+//                 <th scope="col">MIN Value</th>
+//                 <th scope="col">CURRENT</th>
+//                 <th scope="col">CURRENT Value</th>
+//             </thead>
+//             <tbody>
+//                 <tr>
+//                     <td>Search Count (in No.of.times)</td>
+//                     <td>{{analyticsdata.smaxkey}}</td>
+//                     <td>{{analyticsdata.smaxval}}</td>
+//                     <td>{{analyticsdata.sminkey}}</td>
+//                     <td>{{analyticsdata.sminval}}</td>
+//                     <td>{{analyticsdata.sckey}}</td>
+//                     <td>{{analyticsdata.scval}}</td>
+//                 </tr>
+//                 <tr>
+//                     <td>Results Count (in No.of.times)</td>
+//                     <td>{{analyticsdata.rmaxkey}}</td>
+//                     <td>{{analyticsdata.rmaxval}}</td>
+//                     <td>{{analyticsdata.rminkey}}</td>
+//                     <td>{{analyticsdata.rminval}}</td>
+//                     <td>{{analyticsdata.rckey}}</td>
+//                     <td>{{analyticsdata.rcval}}</td>
+//                 </tr>
+//                 <tr>
+//                     <td>Time Taken (in NanoSecs)</td>
+//                     <td>{{analyticsdata.tmaxkey}}</td>
+//                     <td>{{analyticsdata.tmaxval}}</td>
+//                     <td>{{analyticsdata.tminkey}}</td>
+//                     <td>{{analyticsdata.tminval}}</td>
+//                     <td>{{analyticsdata.tckey}}</td>
+//                     <td>{{analyticsdata.tcval}}</td>
+//                 </tr>
+//             </tbody>
+//         </table>
+//         {{/if}}

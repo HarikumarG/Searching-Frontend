@@ -54,10 +54,6 @@
                 <button type="button" class="btn btn-primary" {{action 'onAnalytics' on="click"}}>View
                     Analytics</button>
                 {{/if}}
-                {{#if chartType}}
-                <button type="button" class="btn btn-primary" {{action 'onNormalView' on="click"}}>Normal</button>
-                <button type="button" class="btn btn-primary" {{action 'onChartView' on="click"}}>Chart</button>
-                {{/if}}
             </div>
         </div>
     </div>
@@ -73,52 +69,23 @@
     </div>
     <br>
     <div class="row justify-content-center align-items-center">
-        {{#if showAnalytics}}
-        <table class="table table-hover table-bordered adjustwidth">
-            <thead>
-                <th scope="col">Type</th>
-                <th scope="col">MAX</th>
-                <th scope="col">MAX Value</th>
-                <th scope="col">MIN</th>
-                <th scope="col">MIN Value</th>
-                <th scope="col">CURRENT</th>
-                <th scope="col">CURRENT Value</th>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>Search Count</td>
-                    <td>{{analyticsdata.smaxkey}}</td>
-                    <td>{{analyticsdata.smaxval}}</td>
-                    <td>{{analyticsdata.sminkey}}</td>
-                    <td>{{analyticsdata.sminval}}</td>
-                    <td>{{analyticsdata.sckey}}</td>
-                    <td>{{analyticsdata.scval}}</td>
-                </tr>
-                <tr>
-                    <td>Results Count</td>
-                    <td>{{analyticsdata.rmaxkey}}</td>
-                    <td>{{analyticsdata.rmaxval}}</td>
-                    <td>{{analyticsdata.rminkey}}</td>
-                    <td>{{analyticsdata.rminval}}</td>
-                    <td>{{analyticsdata.rckey}}</td>
-                    <td>{{analyticsdata.rcval}}</td>
-                </tr>
-                <tr>
-                    <td>Time Taken (in NanoSecs)</td>
-                    <td>{{analyticsdata.tmaxkey}}</td>
-                    <td>{{analyticsdata.tmaxval}}</td>
-                    <td>{{analyticsdata.tminkey}}</td>
-                    <td>{{analyticsdata.tminval}}</td>
-                    <td>{{analyticsdata.tckey}}</td>
-                    <td>{{analyticsdata.tcval}}</td>
-                </tr>
-            </tbody>
-        </table>
+        {{#if chartType}}
+        <div class="dropdown">
+            <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton"
+                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Graphical Representation
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <button class="dropdown-item" {{action 'onTableView' on="click"}}>Table View</button>
+                <button class="dropdown-item" {{action 'onBarView' on="click"}}>Bar Chart View</button>
+                <button class="dropdown-item" {{action 'onColView' on="click"}}>Column Chart View</button>
+            </div>
+        </div>
         {{/if}}
-        {{#if showChart}}
-            <div id="data_div" style="width: 700px; height: 350px;"></div>
-            <div id="time_div" style="width: 700px; height: 350px;"></div>
-        {{/if}}
+    </div>
+    <br>
+    <div class="row justify-content-center align-items-center">
+        <div id="data_div" style="width: 700px; height: 350px;"></div>
+        <div id="time_div" style="width: 700px; height: 350px;"></div>
     </div>
     <br>
 </div>
