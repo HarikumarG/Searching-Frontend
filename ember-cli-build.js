@@ -12,6 +12,7 @@ module.exports = function(defaults) {
   app.import('node_modules/font-awesome/font-awesome.min.css');
   app.import('node_modules/bootstrap/dist/js/bootstrap.js');
   app.import('node_modules/bstreeview/src/js/bstreeview.js');
+  app.import('node_modules/bstreeview/src/css/bstreeview.css');
   // app.import('node_modules/bstreeview/src/css/bstreeview.css');
   // Use `app.import` to add additional libraries to the generated
   // output files.

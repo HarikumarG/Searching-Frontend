@@ -11,11 +11,12 @@ export default class KeywordsearchComponent extends Component {
     @tracked chartType = false;
 
     @tracked analyticsdata = undefined;
+    @tracked resultsdata = undefined;
+    @tracked keyword = undefined;
 
     folderpath = "";
     filename = "";
     lineNo = 1;
-    keyword = undefined;
     responsedata = undefined;
     folderregexlinux = /^\/$|(\/[a-zA-Z_0-9-]+)+$/;
 
@@ -104,14 +105,15 @@ export default class KeywordsearchComponent extends Component {
             })
         }).then((response) => {
             this.keyword = this.keywordInput;
-            $("#display-results").empty();
-            for(var key in response[this.keyword]) {
-                var sentence = response[this.keyword][key];
-                if(sentence.length > 0) {
-                    this.displaytoDOM(sentence,this.keyword,this.lineNo);
-                    this.lineNo++;
-                }
-            }
+            // $("#display-results").empty();
+            // for(var key in response[this.keyword]) {
+            //     var sentence = response[this.keyword][key];
+            //     if(sentence.length > 0) {
+            //         this.displaytoDOM(sentence,this.keyword,this.lineNo);
+            //         this.lineNo++;
+            //     }
+            // }
+            this.resultsdata = response[this.keyword];
             if(response[this.keyword].length > 0) {
                 this.analytics = true;
             } else {
@@ -140,29 +142,29 @@ export default class KeywordsearchComponent extends Component {
         })
     }
 
-    displaytoDOM(sentence,key,lineNo) {
-        const tbody = document.querySelector("#display-results");
-        let trow = document.createElement('tr');
+    // displaytoDOM(sentence,key,lineNo) {
+    //     const tbody = document.querySelector("#display-results");
+    //     let trow = document.createElement('tr');
 
-        let tdata1 = document.createElement('td');
-        var line = document.createTextNode(lineNo);
-        tdata1.appendChild(line);
+    //     let tdata1 = document.createElement('td');
+    //     var line = document.createTextNode(lineNo);
+    //     tdata1.appendChild(line);
 
-        let tdata2 = document.createElement('td');
-        let datadiv = document.createElement('div');
+    //     let tdata2 = document.createElement('td');
+    //     let datadiv = document.createElement('div');
         
-        var regexExp = new RegExp(key,"g");
-        const replaceWith = "<span class='highlight'>"+key+"</span>";
-        var fi = sentence.replace(regexExp,replaceWith);
+    //     var regexExp = new RegExp(key,"g");
+    //     const replaceWith = "<span class='highlight'>"+key+"</span>";
+    //     var fi = sentence.replace(regexExp,replaceWith);
 
-        datadiv.innerHTML = fi;
-        tdata2.appendChild(datadiv);
+    //     datadiv.innerHTML = fi;
+    //     tdata2.appendChild(datadiv);
 
-        trow.appendChild(tdata1);
-        trow.appendChild(tdata2);
+    //     trow.appendChild(tdata1);
+    //     trow.appendChild(tdata2);
 
-        tbody.appendChild(trow);
-    }
+    //     tbody.appendChild(trow);
+    // }
 
     charts(data) {
         var searches = data["searchcount"];
@@ -251,46 +253,3 @@ export default class KeywordsearchComponent extends Component {
         return [d,options];
     }
 }
-
-// {{#if showAnalytics}}
-//         <table class="table table-hover table-bordered adjustwidth">
-//             <thead>
-//                 <th scope="col">Type</th>
-//                 <th scope="col">MAX</th>
-//                 <th scope="col">MAX Value</th>
-//                 <th scope="col">MIN</th>
-//                 <th scope="col">MIN Value</th>
-//                 <th scope="col">CURRENT</th>
-//                 <th scope="col">CURRENT Value</th>
-//             </thead>
-//             <tbody>
-//                 <tr>
-//                     <td>Search Count (in No.of.times)</td>
-//                     <td>{{analyticsdata.smaxkey}}</td>
-//                     <td>{{analyticsdata.smaxval}}</td>
-//                     <td>{{analyticsdata.sminkey}}</td>
-//                     <td>{{analyticsdata.sminval}}</td>
-//                     <td>{{analyticsdata.sckey}}</td>
-//                     <td>{{analyticsdata.scval}}</td>
-//                 </tr>
-//                 <tr>
-//                     <td>Results Count (in No.of.times)</td>
-//                     <td>{{analyticsdata.rmaxkey}}</td>
-//                     <td>{{analyticsdata.rmaxval}}</td>
-//                     <td>{{analyticsdata.rminkey}}</td>
-//                     <td>{{analyticsdata.rminval}}</td>
-//                     <td>{{analyticsdata.rckey}}</td>
-//                     <td>{{analyticsdata.rcval}}</td>
-//                 </tr>
-//                 <tr>
-//                     <td>Time Taken (in NanoSecs)</td>
-//                     <td>{{analyticsdata.tmaxkey}}</td>
-//                     <td>{{analyticsdata.tmaxval}}</td>
-//                     <td>{{analyticsdata.tminkey}}</td>
-//                     <td>{{analyticsdata.tminval}}</td>
-//                     <td>{{analyticsdata.tckey}}</td>
-//                     <td>{{analyticsdata.tcval}}</td>
-//                 </tr>
-//             </tbody>
-//         </table>
-//         {{/if}}
