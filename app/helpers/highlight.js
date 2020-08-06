@@ -1,6 +1,6 @@
 import Helper from '@ember/component/helper';
 
-export default class Increment extends Helper {
+export default class Highlight extends Helper {
     compute(args) {
         let [key,line] = args;
         var regexExp = new RegExp(key,"g");

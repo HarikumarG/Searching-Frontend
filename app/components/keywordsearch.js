@@ -16,7 +16,6 @@ export default class KeywordsearchComponent extends Component {
 
     folderpath = "";
     filename = "";
-    lineNo = 1;
     responsedata = undefined;
     folderregexlinux = /^\/$|(\/[a-zA-Z_0-9-]+)+$/;
 
@@ -105,14 +104,6 @@ export default class KeywordsearchComponent extends Component {
             })
         }).then((response) => {
             this.keyword = this.keywordInput;
-            // $("#display-results").empty();
-            // for(var key in response[this.keyword]) {
-            //     var sentence = response[this.keyword][key];
-            //     if(sentence.length > 0) {
-            //         this.displaytoDOM(sentence,this.keyword,this.lineNo);
-            //         this.lineNo++;
-            //     }
-            // }
             this.resultsdata = response[this.keyword];
             if(response[this.keyword].length > 0) {
                 this.analytics = true;
@@ -141,31 +132,6 @@ export default class KeywordsearchComponent extends Component {
             console.log(error);
         })
     }
-
-    // displaytoDOM(sentence,key,lineNo) {
-    //     const tbody = document.querySelector("#display-results");
-    //     let trow = document.createElement('tr');
-
-    //     let tdata1 = document.createElement('td');
-    //     var line = document.createTextNode(lineNo);
-    //     tdata1.appendChild(line);
-
-    //     let tdata2 = document.createElement('td');
-    //     let datadiv = document.createElement('div');
-        
-    //     var regexExp = new RegExp(key,"g");
-    //     const replaceWith = "<span class='highlight'>"+key+"</span>";
-    //     var fi = sentence.replace(regexExp,replaceWith);
-
-    //     datadiv.innerHTML = fi;
-    //     tdata2.appendChild(datadiv);
-
-    //     trow.appendChild(tdata1);
-    //     trow.appendChild(tdata2);
-
-    //     tbody.appendChild(trow);
-    // }
-
     charts(data) {
         var searches = data["searchcount"];
         var results = data["resultcount"];

@@ -50,7 +50,10 @@
     </div>
 </div>
 {{/if}}
+{{#if showFolder}}
 <div class="container h-100">
     <div id="data" class="row justify-content-center align-items-center">
+        <Folderstructure @tree = {{this.treeData}} @id = "tree"/>
     </div>
 </div>
+{{/if}}

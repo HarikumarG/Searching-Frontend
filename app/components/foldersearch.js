@@ -7,6 +7,8 @@ export default class FoldersearchComponent extends Component {
   @tracked loginpage = true;
   @tracked searchpage = false;
   @tracked pattern = "";
+  @tracked treeData = undefined;
+  @tracked showFolder = false;
 
   folderpath = "";
   responsedata = undefined;
@@ -82,41 +84,6 @@ export default class FoldersearchComponent extends Component {
         console.log(error);
       });
   }
-  builds(parentElement,nodes,depth) {
-      var leftPadding = '1.25rem';
-      if(depth > 0) {
-        leftPadding = (1.25 + depth * 1.25).toString() + "rem;";
-      }
-      depth += 1;
-
-      $.each(nodes,(id,node) => {
-          var treeItem = $('<div role="treeitem" class="list-group-item" data-toggle="collapse"></div>')
-              .attr('data-target',"#tree-item-"+node.nodeId)
-              .attr('style','padding-left:'+leftPadding)
-              .attr('aria-level',depth);
-          if(node.nodes) {
-            var treeItemStateIcon = $('<i class="state-icon"></i>')
-              .addClass('fa fa-angle-right fa-fw');
-              treeItem.append(treeItemStateIcon);
-          }
-          if(node.icon) {
-            var treeItemIcon = $('<i class="item-icon"></i>')
-              .addClass(node.icon);
-            treeItem.append(treeItemIcon);
-          }
-          treeItem.append(node.text);
-          if(node.id) {
-            treeItem.attr('id',node.id);
-          }
-          parentElement.append(treeItem);
-          if(node.nodes) {
-            var treeGroup = $('<div role="group" class="list-group collapse" id="itemid"></div>')
-              .attr('id',"tree-item-"+node.nodeId);
-            parentElement.append(treeGroup);
-            this.builds(treeGroup,node.nodes,depth);
-          }
-      });
-  }
   initData(node,val) {
     if(!node.nodes) return;
     $.each(node.nodes,(index,nod)=> {
@@ -126,26 +93,6 @@ export default class FoldersearchComponent extends Component {
         this.initData(nod,val);
       }
     });
-  }
-  initTree(element,tree) {
-    $(element).addClass('bstreeview');
-    this.initData({nodes:tree},0);
-    this.builds($(element),tree,0);
-    $(element).on('click','.list-group-item',function(e) {
-      $('.state-icon',this)
-          .toggleClass('fa fa-angle-down fa-fw')
-          .toggleClass('fa fa-angle-right fa-fw');
-    });
-  }
-  create(treeNode) {
-    $("#data").empty();
-    $("#data").append("<div id='tree'></div>");
-    // $("#tree").bstreeview({
-    //   data: treeNode,
-    //   indent: 1.25,
-    //   parentsMarginLeft: "1.25rem",
-    // });
-    this.initTree("#tree",treeNode);
   }
   buildStructure() {
     var tree = [];
@@ -165,8 +112,12 @@ export default class FoldersearchComponent extends Component {
           }
           this.add(parts,tree,0,"folder",this.responsedata[i]["id"]);
       }
-      this.create(tree);
-      this.eventlistener();
+      this.initData({nodes:tree},0);
+      this.showFolder = true;
+      this.treeData = tree;
+      setTimeout(() => {
+        this.eventlistener();
+      },2000);
   }
   add(parts,root,ind,type,id) {
       if(ind == parts.length-1) {
@@ -196,7 +147,7 @@ export default class FoldersearchComponent extends Component {
           id : id1,
           text:name,
           icon:"fa fa-file",
-          expandIcon:"none",
+          expandIcon:"none"
         }
       }
       root.push(node);
