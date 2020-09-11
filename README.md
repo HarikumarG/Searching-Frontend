@@ -1,7 +1,8 @@
 # searching-frontend
 
-This README outlines the details of collaborating on this Ember application.
-A short introduction of this app could easily go here.
+An Ember application which consists of two parts. 
+1. File search, given a pattern and folder path will show all the files matching the pattern in the same hierarchical folder structure
+2. Keyword search, given a file name,path and keyword to be searched will show all the lines that matches the given keyword
 
 ## Prerequisites
 
