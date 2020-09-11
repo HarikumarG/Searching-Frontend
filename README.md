@@ -4,6 +4,8 @@ An Ember application which consists of two parts.
 1. File search, given a pattern and folder path will show all the files matching the pattern in the same hierarchical folder structure
 2. Keyword search, given a file name,path and keyword to be searched will show all the lines that matches the given keyword
 
+https://github.com/HarikumarG/Searching-Backend (For Backend)
+
 ## Prerequisites
 
 You will need the following things properly installed on your computer.
